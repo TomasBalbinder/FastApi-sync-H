@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from uuid import uuid4, UUID
+from uuid import UUID
 from enum import Enum
 
 
@@ -10,7 +10,7 @@ class Gender(str, Enum):
 
 
 class Cosmonaut(BaseModel):
-    id : UUID = uuid4()
+    id: Optional[UUID]
     name : str = Field(max_length=10)
     age : Optional[int]
     gender : Gender

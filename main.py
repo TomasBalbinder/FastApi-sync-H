@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine
 import app.models as models
@@ -21,6 +21,13 @@ def get_db():
 def read_cosmonauts(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
     cosmonauts = crud.get_cosmonauts(db, skip=skip, limit=limit)
     return cosmonauts
+
+@app.post("/cosmonauts/", response_model=schemas.Cosmonaut)
+def create_cosmonaut(cosmonaut: schemas.Cosmonaut, db: Session = Depends(get_db)):
+    created_cosmonaut = crud.create_cosmonaut(db, cosmonaut)
+    return created_cosmonaut
+
+
 
 
 """@app.post('/cosmonauts')
