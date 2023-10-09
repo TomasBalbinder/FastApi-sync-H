@@ -1,17 +1,12 @@
-from fastapi import FastAPI
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-import models
-import schemas
-import database
-import crud
-
-
-
+from app.database import SessionLocal, engine
+import app.models as models
+import app.schemas as schemas
+import app.database as database
+import app.crud as crud
 
 app = FastAPI()
-
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -22,11 +17,8 @@ def get_db():
     finally:
         db.close()
 
-
-
-
-@app.get('/cosmonauts', response_model=list[schemas.Cosmonaut])
-def view_cosmonauts(db: Session = Depends(database.get_db)):
+@app.get('/cosmonauts', response_model=schemas.Cosmonaut)
+def view_cosmonauts(db: Session = Depends(get_db)):
     cosmonauts = crud.get_all_cosmonauts(db)
     return cosmonauts
 
