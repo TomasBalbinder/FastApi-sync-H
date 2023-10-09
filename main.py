@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine
 import app.models as models
 import app.schemas as schemas
-import app.database as database
 import app.crud as crud
+from typing import List
 
 app = FastAPI()
 
@@ -17,9 +17,9 @@ def get_db():
     finally:
         db.close()
 
-@app.get('/cosmonauts', response_model=schemas.Cosmonaut)
-def view_cosmonauts(db: Session = Depends(get_db)):
-    cosmonauts = crud.get_all_cosmonauts(db)
+@app.get("/cosmonauts/", response_model=List[schemas.Cosmonaut])
+def read_cosmonauts(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
+    cosmonauts = crud.get_cosmonauts(db, skip=skip, limit=limit)
     return cosmonauts
 
 
