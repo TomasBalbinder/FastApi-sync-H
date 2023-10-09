@@ -11,12 +11,12 @@ class Gender(str, Enum):
 
 class Cosmonaut(BaseModel):
     id: Optional[UUID]
-    name : str = Field(max_length=10)
+    name : str = Field(max_length=100)
     age : Optional[int]
     gender : Gender
 
 
-"""class CosmonautUpdate(BaseModel):
+class CosmonautUpdate(BaseModel):
     name : Optional[str]
     age : Optional[int]
-    gender : Optional[Gender]"""
+    gender : Optional[Gender]

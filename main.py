@@ -5,6 +5,8 @@ import app.models as models
 import app.schemas as schemas
 import app.crud as crud
 from typing import List
+from uuid import UUID
+from app.schemas import CosmonautUpdate
 
 app = FastAPI()
 
@@ -27,39 +29,20 @@ def create_cosmonaut(cosmonaut: schemas.Cosmonaut, db: Session = Depends(get_db)
     created_cosmonaut = crud.create_cosmonaut(db, cosmonaut)
     return created_cosmonaut
 
+@app.delete("/cosmonauts/{cosmonaut_id}", response_model=schemas.Cosmonaut)
+def delete_cosmonaut(cosmonaut_id: UUID, db: Session = Depends(get_db)):
+    cosmonaut = crud.delete_cosmonaut(db, cosmonaut_id)
+    if cosmonaut is None:
+        raise HTTPException(status_code=404, detail="Cosmonaut not found")
+    crud.delete_cosmonaut(db, cosmonaut_id)
+    return cosmonaut
 
-
-
-"""@app.post('/cosmonauts')
-async def add_cosmonaut(cosmonaut : Cosmonaut):
-    db.append(cosmonaut)
-    return {"id" : cosmonaut.id }
-
-
-@app.delete('/cosmonauts/{cosmonaut_id}')
-async def delete_cosmonaut(cosmonaut_id : UUID):
-    for cosmonaut in db:
-        if cosmonaut.id == cosmonaut_id:
-            db.remove(cosmonaut)
-            return {"Cosmonaut successfully deleted"}
-        
-    raise HTTPException(
-        status_code=404, detail=f"User with id {cosmonaut_id} was deleted")
-
-
-@app.put('/cosmonauts/{cosmonaut_id}')
-async def update_cosmonaut(cosmonaut_update : CosmonautUpdate,cosmonaut_id : UUID):
-    for cosmonaut in db:
-        if cosmonaut.id == cosmonaut_id:
-            if cosmonaut_update.name is not None:
-                cosmonaut.name = cosmonaut_update.name
-            if cosmonaut_update.age is not None:
-                cosmonaut.age = cosmonaut_update.age
-            if cosmonaut_update.gender is not None:
-                cosmonaut.gender = cosmonaut_update.gender
-            return
-    raise HTTPException(
-        status_code=404, detail=f"User with id {cosmonaut_id} doesn't exist")"""
+@app.put("/cosmonauts/{cosmonaut_id}", response_model=schemas.Cosmonaut)
+def update_cosmonaut(cosmonaut_id: UUID, cosmonaut_update: CosmonautUpdate, db: Session = Depends(get_db)):
+    updated_cosmonaut = crud.update_cosmonaut(db, cosmonaut_id, cosmonaut_update)
+    if not updated_cosmonaut:
+        raise HTTPException(status_code=404, detail="Cosmonaut not found")
+    return updated_cosmonaut
 
 
 
