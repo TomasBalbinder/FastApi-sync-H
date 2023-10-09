@@ -4,7 +4,6 @@ from uuid import uuid4, UUID
 from enum import Enum
 
 
-
 class Gender(str, Enum):
     male = 'male'
     female = 'female'
@@ -17,7 +16,7 @@ class Cosmonaut(BaseModel):
     gender : Gender
 
 
-class CosmonautUpdate(BaseModel):
+"""class CosmonautUpdate(BaseModel):
     name : Optional[str]
     age : Optional[int]
-    gender : Optional[Gender]
+    gender : Optional[Gender]"""

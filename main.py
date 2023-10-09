@@ -1,19 +1,22 @@
-from fastapi import FastAPI, HTTPException
-from models import Cosmonaut
-from typing import List
-from uuid import uuid4, UUID
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+import models
+import schemas
 import database
-from schemas import Gender
+import crud
+
+
+
 
 app = FastAPI()
 
 
-
+models.Base.metadata.create_all(bind=engine)
 
 def get_db():
-    db = database.SessionLocal()
+    db = SessionLocal()
     try:
         yield db
     finally:
@@ -22,12 +25,13 @@ def get_db():
 
 
 
-"""@app.get('/cosmonauts')
-async def view_cosmonauts():
-    return db
+@app.get('/cosmonauts', response_model=list[schemas.Cosmonaut])
+def view_cosmonauts(db: Session = Depends(database.get_db)):
+    cosmonauts = crud.get_all_cosmonauts(db)
+    return cosmonauts
 
 
-@app.post('/cosmonauts')
+"""@app.post('/cosmonauts')
 async def add_cosmonaut(cosmonaut : Cosmonaut):
     db.append(cosmonaut)
     return {"id" : cosmonaut.id }
